@@ -81,12 +81,13 @@
 \usetikzlibrary{arrows}
 \usetikzlibrary{shapes}
 \usepackage{hyperref}
+\usepackage[UTF8]{ctex}
 
 \newcommand{\T}[1]{\texttt{#1}}
 
 \title[Learn Git]{Learn Git The Not So Super Hard Way\footnote{Credit to https://github.com/b1f6c1c4/learn-git-the-super-hard-way}}
-\author[zenithal]{Zenithal}
-\date{2022-03-31}
+\author[zenithal]{Zenithal \\ Woshiluo Luo As translator}
+\date{2024-11-24}
 
 \begin{document}
 
@@ -94,22 +95,22 @@
 \titlepage
 \end{frame}
 
-\begin{frame}{Why this}
+\begin{frame}{为什么需要这个}
   \begin{itemize}
-    \item<1-> Learning git is painful\begin{itemize}
-      \item Too many concepts (commit, branch, stage, index)
-      \item Too many commands (clone, pull, push)
+    \item<1-> 学习 Git 太痛苦了\begin{itemize}
+      \item 太多概念 (commit, branch, stage, index)
+      \item 太多命令 (clone, pull, push)
     \end{itemize}
-    \item<2-> State machine too complex\begin{itemize}
-      \item You often do not know what state you are in 
-      \item Conflict! Help me ERIN!
+    \item<2-> 状态模型太过复杂\begin{itemize}
+      \item 你常常不知道自己在哪个状态下。
+      \item 冲突! Help me ERIN!
     \end{itemize}
-    \item<3-> Learning about commands is not enough\begin{itemize}
-      \item You often do not know what's going on
-      \item Let's break it down to basic elements
+    \item<3-> 知道命令是远远不够的\begin{itemize}
+      \item 你常常不知道发生了什么
+      \item 让我们来看一些更基本的组件
     \end{itemize}
-    \item<4-> The super hard way is super easy\begin{itemize}
-      \item You change the file, you know what's going on
+    \item<4-> 最困难的路，最简单的方法。\begin{itemize}
+      \item 你对文件做了改动，你知道发生了什么。
     \end{itemize}
   \end{itemize}
 \end{frame}
@@ -118,15 +119,15 @@
 \begin{frame}{git repo structure}
   \begin{itemize}
     \item git repo\begin{itemize}
-      \item often the \T{.git}
-      \item often contains HEAD, config
+      \item 通常在 the \T{.git}
+      \item 通常包含 HEAD, config
     \end{itemize}
     \item worktree\begin{itemize}
-      \item the file
-      \item often contains README.md, main.c, main.h
-      \item worktree is just a checkout of the git repo
-      \item you can re-contruct your worktree from the git repo
-      \item the git repo is essential, but worktree is not
+      \item 文件们
+      \item 通常包含 README.md, main.c, main.h
+      \item worktree 只是 git repo 的一个 checkout
+      \item 你可以从 git repo 中重新构建 worktree
+      \item Git repo 是一切的基石，worktree 并不是
     \end{itemize}
   \end{itemize}
 \end{frame}
@@ -135,55 +136,55 @@
   \begin{itemize}
     \item \T{mkdir .git}
     \item \T{mkdir .git/objects}\begin{itemize}
-      \item Must have
+      \item 必须项
     \end{itemize}
     \item \T{mkdir .git/refs}\begin{itemize}
-      \item Must have
+      \item 必须项
     \end{itemize}
     \item \T{echo 'ref: refs/heads/master' > .git/HEAD}\begin{itemize}
-      \item Establish {HEAD} ref
-      \item HEAD points to \T{.git/refs/heads/master} (Even though it does not exist now)
-      \item Side note: \T{refs/heads/main}
+      \item 建立 {HEAD} ref
+      \item HEAD 指向 \T{.git/refs/heads/master} (尽管现在还不存在)
+      \item 即: \T{refs/heads/main}
     \end{itemize}
-    \item config, hooks, info, etc are not necessary
-    \item Now you can \T{git status} to check the status
+    \item config, hooks, info, etc 并非必要
+    \item 现在你可以使用 \T{git status} 来检查状态
   \end{itemize}
 \end{frame}
 
 \section{objects}
 \begin{frame}{objects}
   \begin{itemize}
-    \item<1-> You have created \T{.git/objects}, then what are objects
-    \item<2-> Four types of objects\begin{itemize}
-      \item<3-> blob: file content
-      \item<4-> tree: folder\begin{itemize}
-        \item Side note: what's in folder in file system
-        \item filename (stored here instead of in blob!)
-        \item hash of blobs/trees (folder structure!)
+    \item<1-> 你已经创建了 \T{.git/objects}, 那么什么是 objects
+    \item<2-> 四种 objects\begin{itemize}
+      \item<3-> blob: 文件内容
+      \item<4-> tree: 文件夹\begin{itemize}
+        \item 注记: 文件系统中的文件夹
+        \item 文件名 (先于 blob 储存!)
+        \item 树和 blobs 的 hash (文件夹结构!)
       \end{itemize}
-      \item<5-> commit: a state of the root folder\begin{itemize}
-        \item contains one specific tree
-        \item parent(s): other commit(s)
+      \item<5-> commit: 根文件夹的一个状态\begin{itemize}
+        \item 包含一个指定的树
+        \item 祖先(们): 其他 commit 
         \item author/committer/commit message: meta data
       \end{itemize}
-      \item<6-> tag: will not introduce today
+      \item<6-> tag: 不是本课件的讨论范围
     \end{itemize}
   \end{itemize}
 \end{frame}
 
 \begin{frame}[fragile]{blob}
   \begin{itemize}
-    \item<1-> blob: file content
+    \item<1-> blob: 文件内容
     \item<2-> \T{echo 'hello' | git hash-object -t blob --stdin -w}\begin{itemize}
-      \item Write a blob/file whose content is \T{'hello'}
-      \item hash that content to an object in type \T{blob} from \T{stdin} then \T{w}rite to the object database
-      \item Output: \T{ce013625030ba8dba906f756967f9e9ca394464a}, the hash of the object
+      \item 写入一个内容为 \T{'hello'} 的 blob/file
+      \item 得到对于一个类型为 \T{blob} 的 object，从 \T{stdin} 输入并 写入（\T{w}rite ） object database
+      \item 输出: \T{ce013625030ba8dba906f756967f9e9ca394464a}, the hash of the object
     \end{itemize}
     \item<3-> \T{cat .git/objects/ce/013625030ba8dba906f756967f9e9ca394464a}\begin{itemize}
-      \item Output: \T{xKOR0cH}, compressed content of hello
-      \item note the object path!
+      \item 输出: \T{xKOR0cH}, hello 的压缩后数据
+      \item 注意该文件的路径！
     \end{itemize}
-    \item<4-> Check the actual content\begin{verbatim}
+    \item<4-> 查看真实内容 \begin{verbatim}
     $ printf '\x1f\x8b\x08\x00\x00\x00\x00\x00' \
     | cat - .git/objects/ce/013625030ba8dba906f756967f9e9ca394464a \
     | gunzip -dc 2>/dev/null | xxd
@@ -194,7 +195,7 @@
 
 \begin{frame}{blob (cont'd)}
   \begin{itemize}
-    \item Painful using raw command? Of course we have higher level instructions
+    \item 使用这些直接命令很痛苦？当然我们有更高级的指令
     \item \T{git cat-file blob ce01}\begin{itemize}
       \item Output: \T{hello}
     \end{itemize}
@@ -206,8 +207,8 @@
 
 \begin{frame}[fragile]{tree}
   \begin{itemize}
-    \item<1-> tree: folder
-    \item<2-> Create a tree\begin{verbatim}
+    \item<1-> tree: 文件夹
+    \item<2-> 创建一棵 tree\begin{verbatim}
 (printf '100644 name.ext\x00';
 echo '0: ce013625030ba8dba906f756967f9e9ca394464a' | xxd -rp -c 256;
 printf '100755 name2.ext\x00';
@@ -215,7 +216,7 @@ echo '0: ce013625030ba8dba906f756967f9e9ca394464a' | xxd -rp -c 256) \
 | git hash-object -t tree --stdin -w
 # 58417991a0e30203e7e9b938f62a9a6f9ce10a9a
 \end{verbatim}
-    \item<3-> You can also (another format)\begin{verbatim}
+    \item<3-> 你也可以（另一种形式）\begin{verbatim}
 git mktree --missing <<EOF
 100644 blob ce013625030ba8dba906f756967f9e9ca394464a$(printf '\t')name.ext
 100755 blob ce013625030ba8dba906f756967f9e9ca394464a$(printf '\t')name2.ext
@@ -227,19 +228,19 @@ EOF
 
 \begin{frame}[fragile]{tree (cont'd)}
   \begin{itemize}
-    \item<1-> Directly inspect file content\begin{verbatim}
+    \item<1-> 直接查看文件内容\begin{verbatim}
 printf '\x1f\x8b\x08\x00\x00\x00\x00\x00' \
 | cat - .git/objects/58/417991a0e30203e7e9b938f62a9a6f9ce10a9a \
 | gunzip -dc 2>/dev/null | xxd
 \end{verbatim}
     \item<2-> \T{git cat-file tree 5841 | xxd}
-    \item<3-> \T{git ls-tree 5841} (Compare with mktree above)
-    \item<4-> \T{git show 5841} (A more simple version)
+    \item<3-> \T{git ls-tree 5841} (和上文 mktree 相对)
+    \item<4-> \T{git show 5841} (一个更简单的版本)
   \end{itemize}
 \end{frame}
 
 \begin{frame}[fragile]{commit}
-  Directly create file\begin{verbatim}
+  直接创建文件\begin{verbatim}
 git hash-object -t commit --stdin -w <<EOF
 tree 58417991a0e30203e7e9b938f62a9a6f9ce10a9a
 author b1f6c1c4 <b1f6c1c4@gmail.com> 1514736000 +0800
@@ -254,7 +255,7 @@ EOF
 \end{frame}
 
 \begin{frame}[fragile]{commit (cont'd)}
-  Or from high level command\begin{verbatim}
+  或者一个更高级的指令\begin{verbatim}
 GIT_AUTHOR_NAME=b1f6c1c4 \
 GIT_AUTHOR_EMAIL=b1f6c1c4@gmail.com \
 GIT_AUTHOR_DATE='1600000000 +0800' \
@@ -268,26 +269,26 @@ or by the option '-m'
 EOF
 # efd4f82f6151bd20b167794bc57c66bbf82ce7dd
 \end{verbatim}
-  That's why you need to \T{git config --global user.email} and \T{user.name}
+  这也是为什么你需要执行 \T{git config --global user.email} 和 \T{user.name}
 \end{frame}
 
 \begin{frame}[fragile]{commit (cont'd)}
   \begin{itemize}
-    \item<1-> Directly inspect file content\begin{verbatim}
+    \item<1-> 直接观察文件\begin{verbatim}
 printf '\x1f\x8b\x08\x00\x00\x00\x00\x00' \
 | cat - ./objects/ef/d4f82f6151bd20b167794bc57c66bbf82ce7dd \
 | gunzip -dc 2>/dev/null | xxd
 \end{verbatim}
     \item<2-> \T{git cat-file commit efd4}
-    \item<3-> \T{git show efd4~} (A more simple version, in diff format)
-    \item<3-> Note: commits are snapshots, not diffs/patchs\footnote{https://github.blog/2020-12-17-commits-are-snapshots-not-diffs/}
+    \item<3-> \T{git show efd4~} (一种更简单的方式，以 diff 形式展示)
+    \item<3-> 注: commits 是快照, 并非 diffs/patchs\footnote{https://github.blog/2020-12-17-commits-are-snapshots-not-diffs/}
   \end{itemize}
 \end{frame}
 
 \begin{frame}[fragile]{Lucky commit}
   \begin{itemize}
-    \item Feeling hash too boring?
-    \item Try lucky commit!\footnote{https://github.com/not-an-aardvark/lucky-commit}
+    \item Hash 太无聊了！
+    \item 试试 lucky commit!\footnote{https://github.com/not-an-aardvark/lucky-commit}
     \item \begin{verbatim}
 $ git log
 1f6383a Some commit
@@ -295,57 +296,57 @@ $ lucky_commit
 $ git log
 0000000 Some commit
 \end{verbatim}
-    \item Note the commit msg in the prev slide, we can change it to mine a lucky hash
+    \item 注意前一页的 commit msg，我们可以通过控制他来得到了一个 lucky hash
   \end{itemize}
 \end{frame}
 
 \section{ref}
 \begin{frame}{ref}
   \begin{itemize}
-    \item ref is a convenient reference to one specific commit/other ref
-    \item in \T{.git/ref}
-    \item two types of ref\begin{itemize}
-      \item direct ref
-      \item indirect ref, e.g. \T{HEAD} (often the case)
+    \item ref 是一个方便的，指向一个特定 commit 或者其他 ref 的引用
+    \item 存在 \T{.git/ref}
+    \item 两种 ref\begin{itemize}
+      \item 直接 ref
+	  \item 间接 ref, e.g. \T{HEAD} (常见情况)
     \end{itemize}
-    \item two common refs we will introduce today\begin{itemize}
-      \item heads: local branch
-      \item remotes: remote branch
+    \item 今天将会介绍两个常见 ref\begin{itemize}
+      \item heads: 本地分支
+      \item remotes: 远端分支
     \end{itemize}
   \end{itemize}
 \end{frame}
 
 \begin{frame}[fragile]{local branch and direct ref}
   \begin{itemize}
-    \item<1-> Create file (not recommended as no reflog)\begin{verbatim}
+    \item<1-> 直接创建文件 (由于没有 reflog 所以不推荐)\begin{verbatim}
 mkdir -p .git/refs/heads/
 echo d4dafde7cd9248ef94c0400983d51122099d312a > .git/refs/heads/br1
 \end{verbatim}
-    \item<2-> The following command will leave reflog in \T{.git/log/refs/heads/br1}
+    \item<2-> 下面的命令会在 \T{.git/log/refs/heads/br1} 留下 reflog
     \item<2-> \T{git update-ref --no-deref -m 'Reason for update' refs/heads/br1 d4da}
     \item<2-> \T{git branch -f br1 d4da}
   \end{itemize}
 \end{frame}
 
-\begin{frame}{about reflog}
+\begin{frame}{关于 reflog}
   \begin{itemize}
-    \item Record all the changes to your ref
-    \item Useful when you accidently switch to another place\begin{itemize}
+    \item 记录你的 ref 的一切变化
+    \item 在你一不小心 swich 到其他地方时很有用\begin{itemize}
       \item \T{git rebase master}
       \item \T{git checkout -B master origin/master}
-      \item then you want to switch to old tree for some reason
-      \item reflog shows the commit that one ref \textbf{was}
+      \item 之后你由于某种原因想要 switch 到之前的 tree
+      \item reflog 会给出一个 ref \textbf{曾经的} commit
     \end{itemize}
-    \item Demo of my working dir: lots of reflogs
+    \item 一个栗子: lots of reflogs
   \end{itemize}
 \end{frame}
 
 \begin{frame}{indirect ref}
   \begin{itemize}
-    \item Remember when you init\begin{itemize}
+    \item 还记得你初始化 git repo 的命令吗？\begin{itemize}
       \item \T{echo 'ref: refs/heads/master' > .git/HEAD}
     \end{itemize}
-    \item This format is indirect ref
+    \item 这种格式就是 indirect ref
   \end{itemize}
 \end{frame}
 
@@ -357,31 +358,31 @@ echo d4dafde7cd9248ef94c0400983d51122099d312a > .git/refs/heads/br1
   \end{figure}
   \begin{itemize}
     % stage figure here
-    \item index stores what to be commited when you \T{git commit}
-    \item file at \T{.git/index}
-    \item often we call things in index as staged (the figure above)
-    \item a complex database
-    \item contains many things, like filename, mode, hash, mtime, etc
+    \item index 储存你想要 在 \T{git commit} commited 的内容
+    \item 文件是 \T{.git/index}
+    \item 通常叫在 index 中的文件为 staged (如上文所说)
+    \item 一个复杂的数据库
+    \item 包含很多东西, 如 filename, mode, hash, mtime, 等
   \end{itemize}
 \end{frame}
 
-\begin{frame}{manipulate index}
+\begin{frame}{操纵 index}
   \begin{itemize}
-    \item<1-> it is hard to manupulate index  
-    \item<1-> we study common cases here
-    \item<1-> \T{git add} stores the content into index
-    \item<1-> mark them ready for commit
+    \item<1-> 这很困难
+    \item<1-> 我们可以学习一些常规情况
+    \item<1-> \T{git add} 将内容存入 index
+    \item<1-> 将他们标记为将被 commit
     \item<2-> 1. \T{git add; git status}\begin{itemize}
-      \item the file you added is ready for commit
+      \item 那些已经被你加入 index 的文件将被 commit
     \end{itemize}
     \item<3-> 2. \T{git add; modify; git status}\begin{itemize}
-      \item the file content you added is ready for commit
-      \item the new file content you did not add is not visible to index
-      \item \T{modify} will not be contained in commit
+      \item 你已经 added 的文件内容将被 commit
+	  \item 新的文件内容尚未被 add，并不在 index 里
+      \item \T{modify} 将不会被 commit
     \end{itemize}
     \item<4-> 3. \T{git add; rm; git status; git restore}\begin{itemize}
-      \item even though file is deleted, it has a copy in \T{index}
-      \item if you accidently \T{rm -rf *}, you can restore your file! 
+      \item 尽管文件已经被删除，但是他仍在 \T{index} 中有一份拷贝
+      \item 如果你不慎 \T{rm -rf *}, 你可以恢复你的文件! 
     \end{itemize}
   \end{itemize}
 \end{frame}
@@ -389,26 +390,26 @@ echo d4dafde7cd9248ef94c0400983d51122099d312a > .git/refs/heads/br1
 \section{switch/checkout}
 \begin{frame}{switch/checkout}
   \begin{itemize}
-    \item Recall that \T{.git/HEAD} is a ref
-    \item This ref is for your worktree
-    \item Recall your worktree is your actual content
-    \item Change the content of your worktree by manipulating HEAD
+    \item 回忆一下， \T{.git/HEAD} 是一个 ref
+    \item 这是你 worktree 的 ref
+    \item 回忆一下，你的 worktree 是你实际看到的内容
+    \item 我们可以通过操纵 HEAD 来修改你的 worktree 
   \end{itemize}
 \end{frame}
 
 \begin{frame}{switch/checkout (cont'd)}
   \begin{itemize}
-    \item<1-> Most famous: \T{git checkout master}\begin{itemize}
-      \item Make HEAD point to \T{refs/heads/master}
-      \item Then checkout the content to your worktree
-      \item That's why it is named checkout
-      \item Actually an old syntax, recommend using switch now
+    \item<1-> 最著名的: \T{git checkout master}\begin{itemize}
+      \item 让 HEAD 指向 \T{refs/heads/master}
+	  \item 然后 checkout 你 worktree 的内容
+      \item 这就是他为什么叫 checkout
+      \item 其实是一个就语法了，现在推荐使用 switch
       \item \T{git switch master}
     \end{itemize}
-    \item<2-> Yet most famous: \T{git reset --hard HEAD$\sim$1}\begin{itemize}
-      \item Change HEAD to HEAD$\sim$1 (the former commit of HEAD)
-      \item Checkout the content to your worktree
-      \item Note: there are \T{reset --soft/--mixed}, learn them by yourself
+    \item<2-> 也很著名的: \T{git reset --hard HEAD$\sim$1}\begin{itemize}
+      \item 将 HEAD 指向 HEAD$\sim$1 (the former commit of HEAD)
+	  \item checkout 你 worktree 的内容
+      \item 注: 还有 \T{reset --soft/--mixed}, 请自行研究
     \end{itemize}
   \end{itemize}
 \end{frame}
@@ -416,23 +417,23 @@ echo d4dafde7cd9248ef94c0400983d51122099d312a > .git/refs/heads/br1
 \section{pull/clone/push}
 \begin{frame}{remotes}
   \begin{itemize}
-    \item Recall that we have talked about \T{.git/refs/remotes}
-    \item Since we have local ref(branch), we can also have remote ref(branch)
-    \item If no remote branch, it is not a distributed version control system
-    \item How to sync them?
-    \item pull commit from remote to local
-    \item push commit from local to remote
-    \item So the concept of commit is very useful
+    \item 我们已经提到过 \T{.git/refs/remotes}
+    \item 既然我们有 local ref(branch), 我们也会有 remote ref(branch)
+    \item 没有 remote branch, 算什么分布式版本控制系统（distributed version control system）
+    \item 如果同步两端呢？
+    \item pull commit 从 remote 到 local
+    \item push commit 从local 到 remote
+    \item 所以 commit 的概念是非常有用的！
   \end{itemize}
 \end{frame}
 
 \begin{frame}{config remote}
   \begin{itemize}
-    \item If you want to have remote branch, you must have a remote first
-    \item edit \T{.git/config} to add them
-    \item or \T{git remote add origin git@github.com:xxx/yyy}\begin{itemize}
-      \item \T{origin} is a convention, you can use other name
-      \item You can have multiple remote
+    \item 如果你还没有 remote，那么添加 remote 是必要的
+    \item 编辑 \T{.git/config} 来添加
+    \item 或者 \T{git remote add origin git@github.com:xxx/yyy}\begin{itemize}
+      \item \T{origin} 是一个惯用名，你可以取一个自己喜欢的名字。
+      \item 你可以有多个 remote
     \end{itemize}
     \item Demo of my repo
   \end{itemize}
@@ -441,20 +442,20 @@ echo d4dafde7cd9248ef94c0400983d51122099d312a > .git/refs/heads/br1
 \begin{frame}{fetch remote}
   \begin{itemize}
     \item<1-> \T{git fetch origin master}\begin{itemize}
-      \item Fetch the \T{master} ref from \T{origin}
-      \item You can check \T{.git/refs/remotes/origin/master} now
+      \item 从 \T{origin} 获取 \T{master} ref 
+      \item 你现在可以看看 \T{.git/refs/remotes/origin/master} 了
     \end{itemize}
     \item<2-> \T{git pull origin master}\begin{itemize}
-      \item despite \T{git fetch}, it tries to update your local ref
-      \item Update \T{.git/refs/remotes/origin/master}
-      \item and update \T{.git/refs/heads/master} accordingly
-      \item The relationship is recorded in \T{.git/config}
+      \item 不同于 \T{git fetch}, 他会尝试更新你的 local ref
+      \item 更新 \T{.git/refs/remotes/origin/master}
+      \item 并同时更新 \T{.git/refs/heads/master} 
+      \item 之间的关于会在 \T{.git/config} 中记录
     \end{itemize}
     \item<3-> \T{git pull}\begin{itemize}
-      \item short hand for the above, according to your \T{.git/config}
+      \item 上个命令的缩写，会根据 \T{.git/config} 中的记录执行
     \end{itemize}
     \item<4-> \T{git clone}\begin{itemize}
-      \item Actually a short hand for
+      \item 事实上是下面命令的缩写
       \item \T{git init}
       \item \T{git remote add}
       \item \T{git pull}
@@ -465,15 +466,15 @@ echo d4dafde7cd9248ef94c0400983d51122099d312a > .git/refs/heads/br1
 \begin{frame}{push remote}
   \begin{itemize}
     \item<1-> \T{git push origin master}\begin{itemize}
-      \item Sync your local branch master to remote branch master
+      \item 将 local branch master 同步到 remote branch master
     \end{itemize}
     \item<2-> \T{git push}\begin{itemize}
-      \item short hand for the above, according to your \T{.git/config}
+      \item 上个命令的缩写，遵循 \T{.git/config}
     \end{itemize}
-    \item<3-> New branch then \T{git push -u origin :new-branch}\begin{itemize}
-      \item Add a new ref in the remote
-      \item At the same time set the upstream to new-branch
-      \item Check your \T{.git/config} now
+    \item<3-> 一个新的 branch 并执行 \T{git push -u origin :new-branch}\begin{itemize}
+      \item 在 remote 添加一个新的 ref
+      \item 同时设为该 branch 的 upstream
+      \item 现在可以看看你的 \T{.git/config}
     \end{itemize}
   \end{itemize}
 \end{frame}
@@ -481,34 +482,34 @@ echo d4dafde7cd9248ef94c0400983d51122099d312a > .git/refs/heads/br1
 \section{merge}
 \begin{frame}{merge}
   \begin{itemize}
-    \item Now you have commits, you have refs
-    \item How do you merge refs/branches together?
-    \item recall that a branch points to a commit, a commit contains a specific tree
-    \item Namely we need to merge tree, then we need to merge blob first
-    \item How to merge blob?
+    \item 你有 commits 了，你有 refs 了
+    \item 你如何 merge（合并） refs/branches 到一起呢?
+    \item 会议： branch 指向一个 commit, 一个 commit 包含一个指定的 tree
+    \item 即我们需要 merge tree, 也就是我们需要先 merge blob 
+    \item 如何 merge blob?
   \end{itemize}
 \end{frame}
 
 \begin{frame}{two way merge}
   \begin{itemize}
-    \item Two way means the algo can only see two files (our and their)
-    \item Let's setup the file as \T{chapter6.md}
-    \item Two way merge of \T{fileB} and \T{fileC}\begin{itemize}
-      \item The change can be fileC has removed B in the first line and added C in the last line
-      \item The change can be fileB has added B in the first line and deleted C in the last line
-      \item Do not know how to merge, abort
+    \item Two way 意味着算法只关心两个部分(自己和其他)
+    \item 以 \T{chapter6.md} 文件为例
+    \item \T{fileB} 和 \T{fileC} 的 two way merge \begin{itemize}
+      \item fileC 在第一行没有 B 并在最后一行有 C
+	  \item fileB 有第一行的 B 且最后一行没有 C
+      \item 不知道如何合并，终止
     \end{itemize}
-    \item It is not useful
+    \item 这并不实用
   \end{itemize}
 \end{frame}
 
 \begin{frame}[fragile]{three way merge}
   \begin{itemize}
-    \item Three way merge means the algo can see three files (base, our and their)
-    \item Three way merge of \T{fileB} and \T{fileC} with \T{fileA} as base\begin{itemize}
-      \item Compared with \T{fileA}, \T{fileB} added B in the first line
-      \item Compared with \T{fileA}, \T{fileC} added C in the last line
-      \item No conflict in changes
+    \item Three way merge 意味着算法关心三个部分 (base, our and their)
+	\item \T{fileB}, \T{fileC} 和 以 \T{fileA} 为 base 的 three way merge\begin{itemize}
+      \item 相较于 \T{fileA}, \T{fileB} 在第一行加了 B
+      \item 相较于 \T{fileA}, \T{fileC} 在最后一行加了 C
+      \item 变化并无冲突
       \item \T{git merge-file --stdout <our> <base> <their>}
       \item \T{git merge-file --stdout fileC fileA fileB}\begin{verbatim}
 lineBB
@@ -521,11 +522,11 @@ lineCC
 
 \begin{frame}[fragile]{three way merge (cont'd)}
   \begin{itemize}
-    \item What if they both modify the same line? Conflict!
-    \item Usually need manual involvement
-    \item E.g. \T{git merge-file --stdout fileD fileA fileB}\begin{itemize}
-      \item Compared with \T{fileA}, \T{fileD} added D in the first line
-      \item Compared with \T{fileA}, \T{fileB} added B in the first line
+    \item 那么如果两段都对同一行有修改呢？冲突！
+    \item 通常需要手动干涉
+    \item 栗子 \T{git merge-file --stdout fileD fileA fileB}\begin{itemize}
+      \item 相较于 \T{fileA}, \T{fileD} 在第一行加了 D 
+      \item 相较于 \T{fileA}, \T{fileB} 在第一行加了 B 
       \item Output\begin{verbatim}
 <<<<<<< fileD
 lineBD
@@ -539,21 +540,21 @@ lineC
   \end{itemize}
 \end{frame}
 
-\begin{frame}[fragile]{How to resolve conflict}
+\begin{frame}[fragile]{如何解决冲突}
   \begin{itemize}
-    \item Remove all the helper line
-    \item Leave the actual content\begin{verbatim}
+    \item 移除 healper line
+    \item 保留该保留的内容\begin{verbatim}
 lineBBD
 ...some stuff...
 lineC
 \end{verbatim}
-    \item Or if you are aware of what you are doing\begin{itemize}
+    \item 或者，如果你清楚你在做什么\begin{itemize}
       \item \T{git merge-file --ours --stdout fileD fileA fileB}
-      \item Keep our change, discard theirs
+      \item 保留我们的（our）的修改，移除他们的（their）的修改
       \item \T{git merge-file --theirs --stdout fileD fileA fileB}
-      \item Keep their change, discard ours
+      \item 保留他们的修改，移除我们的修改
       \item \T{git merge-file --union --stdout fileD fileA fileB}
-      \item Keep both changes, concat them
+      \item 保留两段的修改，并连接到一起
     \end{itemize}
   \end{itemize}
 \end{frame}
